@@ -1,8 +1,7 @@
-import { formatNetWorth } from "@/app/page";
 import Image from "next/image";
 
-function getPerson(id: string) {
-  return fetch(`https://billions-api.nomadcoders.workers.dev/person/${id}`).then((res) => res.json());
+async function getPerson(id: string) {
+  return await fetch(`https://billions-api.nomadcoders.workers.dev/person/${id}`).then((res) => res.json());
 }
 
 export default async function PersonPage({ params }: { params: { id: string } }) {
@@ -10,10 +9,14 @@ export default async function PersonPage({ params }: { params: { id: string } })
   return (
     <div className="max-w-screen-lg m-auto">
       <div className="my-16 bg-gray-800 p-8 py-20">
-        <Image src={person.squareImage} alt={person.name} width={416} height={416} />
+        {person.squareImage === "https:undefined" ? (
+          <div>이미지 없음</div>
+        ) : (
+          <Image src={person?.squareImage || ""} alt={person.name} width={416} height={416} />
+        )}
         <p className="font-bold text-2xl mt-5">{person.name}</p>
         <div className="mt-5 flex flex-col gap-2">
-          <p>Networth: {formatNetWorth(person.netWorth)}</p>
+          <p>Networth: {Math.floor(person.netWorth / 1000)} Billion</p>
           <p>Country: {person.country}</p>
           <p>Industry: {person.industries}</p>
           <p>{person.bio}</p>
